@@ -1,5 +1,7 @@
 package com.photoshelf.strage;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -12,6 +14,7 @@ import org.apache.http.impl.client.HttpClients;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 public class Photoshelf {
@@ -30,10 +33,12 @@ public class Photoshelf {
 		return readAll(response.getEntity().getContent());
 	}
 
-	public void create(byte[] photo) throws IOException {
-		HttpPost request = new HttpPost(this.url.toString());
+	public String create(byte[] photo) throws IOException {
+		HttpPost request = new HttpPost(this.url + "/");
 		request.setEntity(MultipartEntityBuilder.create().addBinaryBody("photo", photo).build());
-		this.httpClient.execute(request);
+		HttpResponse response = this.httpClient.execute(request);
+		JsonObject json = new Gson().fromJson(new InputStreamReader(response.getEntity().getContent()), JsonObject.class);
+		return json.get("id").getAsString();
 	}
 
 	public void replace(String id, byte[] photo) throws IOException {
