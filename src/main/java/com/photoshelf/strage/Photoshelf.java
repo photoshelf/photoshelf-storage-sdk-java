@@ -17,6 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_OK;
+
 public class Photoshelf {
 
 	private URL url;
@@ -30,26 +33,40 @@ public class Photoshelf {
 	public byte[] find(String id) throws IOException {
 		HttpGet request = new HttpGet(this.url + "/" + id);
 		HttpResponse response = this.httpClient.execute(request);
-		return readAll(response.getEntity().getContent());
+		if (response.getStatusLine().getStatusCode() == SC_OK) {
+			return readAll(response.getEntity().getContent());
+		} else {
+			throw new IllegalStateException(response.toString());
+		}
 	}
 
 	public String create(byte[] photo) throws IOException {
 		HttpPost request = new HttpPost(this.url + "/");
 		request.setEntity(MultipartEntityBuilder.create().addBinaryBody("photo", photo).build());
 		HttpResponse response = this.httpClient.execute(request);
-		JsonObject json = new Gson().fromJson(new InputStreamReader(response.getEntity().getContent()), JsonObject.class);
-		return json.get("id").getAsString();
+		if (response.getStatusLine().getStatusCode() == SC_CREATED) {
+			JsonObject json = new Gson().fromJson(new InputStreamReader(response.getEntity().getContent()), JsonObject.class);
+			return json.get("id").getAsString();
+		} else {
+			throw new IllegalStateException(response.toString());
+		}
 	}
 
 	public void replace(String id, byte[] photo) throws IOException {
 		HttpPut request = new HttpPut(this.url + "/" + id);
 		request.setEntity(MultipartEntityBuilder.create().addBinaryBody("photo", photo).build());
-		this.httpClient.execute(request);
+		HttpResponse response = this.httpClient.execute(request);
+		if (response.getStatusLine().getStatusCode() != SC_OK) {
+			throw new IllegalStateException(response.toString());
+		}
 	}
 
 	public void delete(String id) throws IOException {
 		HttpDelete request = new HttpDelete(this.url + "/" + id);
-		this.httpClient.execute(request);
+		HttpResponse response = this.httpClient.execute(request);
+		if (response.getStatusLine().getStatusCode() != SC_OK) {
+			throw new IllegalStateException(response.toString());
+		}
 	}
 
 	private byte[] readAll(InputStream inputStream) throws IOException {
