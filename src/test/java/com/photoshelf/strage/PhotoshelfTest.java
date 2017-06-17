@@ -11,6 +11,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class PhotoshelfTest {
 
@@ -41,6 +42,18 @@ public class PhotoshelfTest {
 	}
 
 	@Test
+	public void failToFind() throws Exception {
+		stubFor(get("/id").willReturn(notFound()));
+
+		try {
+			client.find("id");
+			fail();
+		} catch (IllegalStateException ignore) {
+		}
+		verify(1, getRequestedFor(urlEqualTo("/id")));
+	}
+
+	@Test
 	public void create() throws Exception {
 		stubFor(post("/")
 				.willReturn(aResponse()
@@ -51,6 +64,18 @@ public class PhotoshelfTest {
 
 		verify(1, postRequestedFor(urlEqualTo("/")));
 		assertThat(id, is("foo"));
+	}
+
+	@Test
+	public void failToCreate() throws Exception {
+		stubFor(post("/").willReturn(serverError()));
+
+		try {
+			client.create("test".getBytes());
+			fail();
+		} catch (IllegalStateException ignore) {
+		}
+		verify(1, postRequestedFor(urlEqualTo("/")));
 	}
 
 	@Test
@@ -65,6 +90,18 @@ public class PhotoshelfTest {
 	}
 
 	@Test
+	public void failToReplace() throws Exception {
+		stubFor(put("/id").willReturn(notFound()));
+
+		try {
+			client.replace("id", new byte[]{});
+			fail();
+		} catch (IllegalStateException ignore) {
+		}
+		verify(1, putRequestedFor(urlEqualTo("/id")));
+	}
+
+	@Test
 	public void deletePhoto() throws Exception {
 		stubFor(delete("/id")
 				.willReturn(aResponse()
@@ -75,4 +112,15 @@ public class PhotoshelfTest {
 		verify(1, deleteRequestedFor(urlEqualTo("/id")));
 	}
 
+	@Test
+	public void failToDelete() throws Exception {
+		stubFor(delete("/id").willReturn(notFound()));
+
+		try {
+			client.delete("id");
+			fail();
+		} catch (IllegalStateException ignore) {
+		}
+		verify(1, deleteRequestedFor(urlEqualTo("/id")));
+	}
 }
