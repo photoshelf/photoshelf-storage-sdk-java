@@ -1,4 +1,4 @@
-package com.photoshelf.strage;
+package com.photoshelf.storage;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Before;

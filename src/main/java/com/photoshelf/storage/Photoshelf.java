@@ -1,4 +1,4 @@
-package com.photoshelf.strage;
+package com.photoshelf.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
