@@ -2,6 +2,7 @@ group 'com.photoshelf'
 version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
@@ -20,4 +21,12 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
     testCompile group: 'com.github.tomakehurst', name: 'wiremock', version: '2.7.1'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://localhost/var/mvn/repo")
+        }
+    }
 }
