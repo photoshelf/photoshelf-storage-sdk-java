@@ -58,7 +58,7 @@ public class PhotoshelfTest {
 		stubFor(post("/")
 				.willReturn(aResponse()
 						.withStatus(201)
-						.withBody("{\"id\":\"foo\"}")));
+						.withBody("{\"Id\":\"foo\"}")));
 
 		String id = client.create("test".getBytes());
 
