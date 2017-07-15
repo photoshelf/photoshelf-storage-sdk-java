@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -71,6 +73,16 @@ public class Photoshelf {
 		HttpResponse response = this.httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() != SC_OK) {
 			throw new IllegalStateException(response.toString());
+		}
+	}
+
+	public boolean healthCheck() throws IOException {
+		HttpGet request = new HttpGet(this.url.toString());
+		try {
+			this.httpClient.execute(request);
+			return true;
+		} catch (HttpHostConnectException | UnknownHostException ignore) {
+			return false;
 		}
 	}
 
