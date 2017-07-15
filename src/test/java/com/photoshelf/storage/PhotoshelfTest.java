@@ -10,8 +10,7 @@ import java.net.URL;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class PhotoshelfTest {
 
@@ -122,5 +121,19 @@ public class PhotoshelfTest {
 		} catch (IllegalStateException ignore) {
 		}
 		verify(1, deleteRequestedFor(urlEqualTo("/id")));
+	}
+
+	@Test
+	public void healthyWhenServerRunning() throws Exception {
+		stubFor(get("/").willReturn(ok()));
+
+		assertTrue(client.healthCheck());
+	}
+
+	@Test
+	public void notHealthyWhenServerDie() throws Exception {
+		wireMockRule.shutdown();
+
+		assertFalse(client.healthCheck());
 	}
 }
