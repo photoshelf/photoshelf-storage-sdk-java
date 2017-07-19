@@ -76,7 +76,7 @@ public class Photoshelf {
 		}
 	}
 
-	public boolean healthCheck() throws IOException {
+	public boolean healthy() throws IOException {
 		HttpGet request = new HttpGet(this.url.toString());
 		try {
 			this.httpClient.execute(request);

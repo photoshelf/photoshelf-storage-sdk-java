@@ -127,13 +127,13 @@ public class PhotoshelfTest {
 	public void healthyWhenServerRunning() throws Exception {
 		stubFor(get("/").willReturn(ok()));
 
-		assertTrue(client.healthCheck());
+		assertTrue(client.healthy());
 	}
 
 	@Test
 	public void notHealthyWhenServerDie() throws Exception {
 		wireMockRule.shutdown();
 
-		assertFalse(client.healthCheck());
+		assertFalse(client.healthy());
 	}
 }
