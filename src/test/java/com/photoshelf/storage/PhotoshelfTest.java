@@ -132,7 +132,7 @@ public class PhotoshelfTest {
 
 	@Test
 	public void notHealthyWhenServerDie() throws Exception {
-		wireMockRule.shutdown();
+		wireMockRule.stop();
 
 		assertFalse(client.healthy());
 	}
