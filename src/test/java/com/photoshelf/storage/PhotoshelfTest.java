@@ -23,104 +23,104 @@ public class PhotoshelfTest {
 
 	@Before
 	public void setUp() throws Exception {
-		URL base = new URL("http://" + BINDING_ADDRESS + ":" + wireMockRule.port() + "/");
+		URL base = new URL("http://" + BINDING_ADDRESS + ":" + wireMockRule.port());
 		this.client = new Photoshelf(base);
 	}
 
 	@Test
 	public void find() throws Exception {
-		stubFor(get("/id")
+		stubFor(get("/photos/id")
 				.willReturn(aResponse()
 						.withStatus(200)
 						.withBody("test".getBytes())));
 
 		byte[] bytea = client.find("id");
 
-		verify(1, getRequestedFor(urlEqualTo("/id")));
+		verify(1, getRequestedFor(urlEqualTo("/photos/id")));
 		assertThat(bytea, is("test".getBytes()));
 	}
 
 	@Test
 	public void failToFind() throws Exception {
-		stubFor(get("/id").willReturn(notFound()));
+		stubFor(get("/photos/id").willReturn(notFound()));
 
 		try {
 			client.find("id");
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
-		verify(1, getRequestedFor(urlEqualTo("/id")));
+		verify(1, getRequestedFor(urlEqualTo("/photos/id")));
 	}
 
 	@Test
 	public void create() throws Exception {
-		stubFor(post("/")
+		stubFor(post("/photos")
 				.willReturn(aResponse()
 						.withStatus(201)
 						.withBody("{\"Id\":\"foo\"}")));
 
 		String id = client.create("test".getBytes());
 
-		verify(1, postRequestedFor(urlEqualTo("/")));
+		verify(1, postRequestedFor(urlEqualTo("/photos")));
 		assertThat(id, is("foo"));
 	}
 
 	@Test
 	public void failToCreate() throws Exception {
-		stubFor(post("/").willReturn(serverError()));
+		stubFor(post("/photos").willReturn(serverError()));
 
 		try {
 			client.create("test".getBytes());
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
-		verify(1, postRequestedFor(urlEqualTo("/")));
+		verify(1, postRequestedFor(urlEqualTo("/photos")));
 	}
 
 	@Test
 	public void replace() throws Exception {
-		stubFor(put("/id")
+		stubFor(put("/photos/id")
 				.willReturn(aResponse()
 						.withStatus(200)));
 
 		client.replace("id", new byte[]{});
 
-		verify(1, putRequestedFor(urlEqualTo("/id")));
+		verify(1, putRequestedFor(urlEqualTo("/photos/id")));
 	}
 
 	@Test
 	public void failToReplace() throws Exception {
-		stubFor(put("/id").willReturn(notFound()));
+		stubFor(put("/photos/id").willReturn(notFound()));
 
 		try {
 			client.replace("id", new byte[]{});
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
-		verify(1, putRequestedFor(urlEqualTo("/id")));
+		verify(1, putRequestedFor(urlEqualTo("/photos/id")));
 	}
 
 	@Test
 	public void deletePhoto() throws Exception {
-		stubFor(delete("/id")
+		stubFor(delete("/photos/id")
 				.willReturn(aResponse()
 						.withStatus(200)));
 
 		client.delete("id");
 
-		verify(1, deleteRequestedFor(urlEqualTo("/id")));
+		verify(1, deleteRequestedFor(urlEqualTo("/photos/id")));
 	}
 
 	@Test
 	public void failToDelete() throws Exception {
-		stubFor(delete("/id").willReturn(notFound()));
+		stubFor(delete("/photos/id").willReturn(notFound()));
 
 		try {
 			client.delete("id");
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
-		verify(1, deleteRequestedFor(urlEqualTo("/id")));
+		verify(1, deleteRequestedFor(urlEqualTo("/photos/id")));
 	}
 
 	@Test
