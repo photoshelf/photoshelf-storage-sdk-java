@@ -34,7 +34,7 @@ public class Photoshelf {
 	}
 
 	public byte[] find(String id) throws IOException {
-		HttpGet request = new HttpGet(this.url + "/" + id);
+		HttpGet request = new HttpGet(this.url + "/photos/" + id);
 		HttpResponse response = this.httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == SC_OK) {
 			return readAll(response.getEntity().getContent());
@@ -44,7 +44,7 @@ public class Photoshelf {
 	}
 
 	public String create(byte[] photo) throws IOException {
-		HttpPost request = new HttpPost(this.url + "/");
+		HttpPost request = new HttpPost(this.url + "/photos");
 		request.setEntity(MultipartEntityBuilder.create()
 				.addBinaryBody("photo", photo, ContentType.create("application/octet-stream"), "image")
 				.build());
@@ -58,7 +58,7 @@ public class Photoshelf {
 	}
 
 	public void replace(String id, byte[] photo) throws IOException {
-		HttpPut request = new HttpPut(this.url + "/" + id);
+		HttpPut request = new HttpPut(this.url + "/photos/" + id);
 		request.setEntity(MultipartEntityBuilder.create()
 				.addBinaryBody("photo", photo, ContentType.create("application/octet-stream"), "image")
 				.build());
@@ -69,7 +69,7 @@ public class Photoshelf {
 	}
 
 	public void delete(String id) throws IOException {
-		HttpDelete request = new HttpDelete(this.url + "/" + id);
+		HttpDelete request = new HttpDelete(this.url + "/photos/" + id);
 		HttpResponse response = this.httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() != SC_OK) {
 			throw new IllegalStateException(response.toString());
