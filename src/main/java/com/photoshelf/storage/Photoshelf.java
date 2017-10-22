@@ -51,7 +51,7 @@ public class Photoshelf {
 		HttpResponse response = this.httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == SC_CREATED) {
 			JsonObject json = new Gson().fromJson(new InputStreamReader(response.getEntity().getContent()), JsonObject.class);
-			return json.get("Id").getAsString();
+			return json.get("id").getAsString();
 		} else {
 			throw new IllegalStateException(response.toString());
 		}
