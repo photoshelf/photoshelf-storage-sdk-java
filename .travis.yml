@@ -1,0 +1,10 @@
+language: java
+jdk:
+  - oraclejdk8
+script:
+  - ./gradlew test
+after_success:
+  - ./gradlew jacocoTestReport coveralls
+notifications:
+  slack:
+    secure: Hj4k069i6cHOOjOv/TZ0ICg96iVXcrgmL9+Ju6pTcL0HLRAo+OVEOznXDqzHD/1kQrRfmSLvjymr/PHFCxQl+xx9/zGtL/mRUmfx74Q39FarEKl0rCMR58CqPloV/YR6o1lsZdJ5vzxTFRDElXz+CcNGXavCYz6hLkJZ+9ZVzNpgiPH+HMCCTU+G6MiuyAelMVin4E62+O5/QccxD7Omx/SLdK4SwG1x2JeCu19UuRpMxwfQ3GYWBs9kON1KNKranKeCNvtoDT+SSkB0OI35O+nv9y031kKzMZ/k6FI8ImaFOrg3mWf/TIpIz/Cf6aFm8Rzaan1MIE7gO7pGrmedF5rZn3kUpQ8VVIVAUqw5ufVxAwwmhKDBPUc75AlfiLpeW1cTwPWTfDgUvlxmwL+uIFS6Uyst0TZrnZsE30DhLE+8uijQcion2noJ1bt0bJUKQM+NbKHxGJBocQm+msD8B/F3ybS57z5jupP+F4t+0P5d/iwnDrZAWOOiZU/mA1P4Rkw/ce0TX0rQAmhAzV+cdU0ZYy4NVWnu3s50wJLZg/qgKnxem9BnNk1bm9+9EKQXWMJA9aRLl3PSJ6GQO5brt6oFV8ysKNwL1RwlfSStYOhFDzYbA72Mo7mYPNPblzAYlWrEnOX1iO3xQTU9m0I9UbrgdDerBsPSvXiz2KUNxWs=
