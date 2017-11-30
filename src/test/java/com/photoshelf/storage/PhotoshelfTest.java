@@ -34,10 +34,10 @@ public class PhotoshelfTest {
 						.withStatus(200)
 						.withBody("test".getBytes())));
 
-		byte[] bytea = client.find("id");
+		Photo photo = client.find(Identifier.of("id"));
 
 		verify(1, getRequestedFor(urlEqualTo("/photos/id")));
-		assertThat(bytea, is("test".getBytes()));
+		assertThat(photo.getImage(), is("test".getBytes()));
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class PhotoshelfTest {
 		stubFor(get("/photos/id").willReturn(notFound()));
 
 		try {
-			client.find("id");
+			client.find(Identifier.of("id"));
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
@@ -59,10 +59,10 @@ public class PhotoshelfTest {
 						.withStatus(201)
 						.withBody("{\"id\":\"foo\"}")));
 
-		String id = client.create("test".getBytes());
+		Identifier id = client.create("test".getBytes());
 
 		verify(1, postRequestedFor(urlEqualTo("/photos")));
-		assertThat(id, is("foo"));
+		assertThat(id.toString(), is("foo"));
 	}
 
 	@Test
