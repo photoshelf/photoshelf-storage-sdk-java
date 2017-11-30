@@ -20,6 +20,10 @@ public class Photo {
 		return instance;
 	}
 
+	public byte[] getImage() {
+		return image;
+	}
+
 	public MimeType mimeType() {
 		InputStream is = new BufferedInputStream(new ByteArrayInputStream(this.image));
 		try {
