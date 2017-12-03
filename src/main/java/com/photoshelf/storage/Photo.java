@@ -29,7 +29,7 @@ public class Photo {
 		try {
 			return new MimeType(URLConnection.guessContentTypeFromStream(is));
 		} catch (MimeTypeParseException | IOException e) {
-			throw new IllegalStateException("unknown");
+			throw new IllegalStateException("unknown data type");
 		}
 	}
 
