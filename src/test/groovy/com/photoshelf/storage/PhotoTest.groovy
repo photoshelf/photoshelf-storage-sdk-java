@@ -1,10 +1,12 @@
 package com.photoshelf.storage
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class PhotoTest extends Specification {
 
-	def "When #value, returns #mineType"() {
+	@Unroll
+	def "When file type is #type, returns #result"() {
 		when:
 		def photo = new Photo(data)
 
@@ -12,8 +14,25 @@ class PhotoTest extends Specification {
 		photo.mimeType().toString() == result
 
 		where:
-		data														|| result
-		new FileInputStream("src/test/resources/lena.jpg")	|| "image/jpeg"
-		new FileInputStream("src/test/resources/lena.png")	|| "image/png"
+		data														| type		|| result
+		new FileInputStream("src/test/resources/lena.jpg")	| "jpeg"	|| "image/jpeg"
+		new FileInputStream("src/test/resources/lena.png")	| "PNG"		|| "image/png"
+	}
+
+	@Unroll
+	def "When unknown file type #type, throws IllegalStateException"() {
+		when:
+		def photo = new Photo(data)
+
+		then:
+		try {
+			photo.mimeType()
+		} catch(Exception e) {
+			e.class == exception
+		}
+
+		where:
+		data										|| exception
+		new ByteArrayInputStream("hoge".getBytes())	|| IllegalStateException
 	}
 }
