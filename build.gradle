@@ -9,7 +9,24 @@ plugins {
 group 'com.photoshelf'
 version '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 9
+
+tasks.withType(JavaCompile) {
+    doFirst {
+        options.compilerArgs = [
+                '--add-modules', 'java.activation',
+        ]
+    }
+}
+
+tasks.withType(Test) {
+    doFirst {
+        jvmArgs = [
+                '--add-modules', 'java.activation',
+        ]
+    }
+}
+
 
 repositories {
     mavenCentral()
