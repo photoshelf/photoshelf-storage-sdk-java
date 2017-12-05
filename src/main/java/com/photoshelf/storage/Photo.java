@@ -27,7 +27,11 @@ public class Photo {
 	public MimeType mimeType() {
 		InputStream is = new BufferedInputStream(new ByteArrayInputStream(this.image));
 		try {
-			return new MimeType(URLConnection.guessContentTypeFromStream(is));
+			String mimeType = URLConnection.guessContentTypeFromStream(is);
+			if (mimeType == null) {
+				throw new IllegalStateException("cannot guess content type.");
+			}
+			return new MimeType(mimeType);
 		} catch (MimeTypeParseException | IOException e) {
 			throw new IllegalStateException("unknown data type", e);
 		}

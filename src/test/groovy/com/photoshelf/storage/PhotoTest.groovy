@@ -19,8 +19,7 @@ class PhotoTest extends Specification {
 		new FileInputStream("src/test/resources/lena.png")	| "PNG"		|| "image/png"
 	}
 
-	@Unroll
-	def "When unknown file type #type, throws IllegalStateException"() {
+	def "When unknown file type, throws IllegalStateException"() {
 		when:
 		def photo = new Photo(data)
 
@@ -28,11 +27,12 @@ class PhotoTest extends Specification {
 		try {
 			photo.mimeType()
 		} catch(Exception e) {
-			e.class == exception
+			assert e.class == exception
 		}
 
 		where:
-		data										|| exception
-		new ByteArrayInputStream("hoge".getBytes())	|| IllegalStateException
+		data														|| exception
+		new ByteArrayInputStream("hoge".getBytes())					|| IllegalStateException
+		new FileInputStream("src/test/resources/lena.pdf")	|| IllegalStateException
 	}
 }
