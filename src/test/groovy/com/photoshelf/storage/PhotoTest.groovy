@@ -14,7 +14,7 @@ class PhotoTest extends Specification {
 		photo.mimeType().toString() == result
 
 		where:
-		data														| type		|| result
+		data												| type		|| result
 		new FileInputStream("src/test/resources/lena.jpg")	| "jpeg"	|| "image/jpeg"
 		new FileInputStream("src/test/resources/lena.png")	| "PNG"		|| "image/png"
 	}
@@ -31,8 +31,8 @@ class PhotoTest extends Specification {
 		}
 
 		where:
-		data														|| exception
-		new ByteArrayInputStream("hoge".getBytes())					|| IllegalStateException
+		data												|| exception
+		new ByteArrayInputStream("hoge".getBytes())			|| IllegalStateException
 		new FileInputStream("src/test/resources/lena.pdf")	|| IllegalStateException
 	}
 }
