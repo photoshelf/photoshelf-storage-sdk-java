@@ -3,6 +3,6 @@ module photoshelf.storage {
     requires httpcore;
     requires httpclient;
     requires httpmime;
-    requires java.activation;
     exports com.photoshelf.storage;
+    exports com.photoshelf.storage.exception;
 }

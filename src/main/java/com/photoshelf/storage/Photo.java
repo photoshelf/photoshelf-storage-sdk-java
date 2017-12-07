@@ -1,9 +1,8 @@
 package com.photoshelf.storage;
 
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
+import com.photoshelf.storage.internal.MimeType;
+
 import java.io.*;
-import java.net.URLConnection;
 
 public class Photo {
 
@@ -26,15 +25,7 @@ public class Photo {
 
 	public MimeType mimeType() {
 		InputStream is = new BufferedInputStream(new ByteArrayInputStream(this.image));
-		try {
-			String mimeType = URLConnection.guessContentTypeFromStream(is);
-			if (mimeType == null) {
-				throw new IllegalStateException("cannot guess content type.");
-			}
-			return new MimeType(mimeType);
-		} catch (MimeTypeParseException | IOException e) {
-			throw new IllegalStateException("unknown data type", e);
-		}
+		return MimeType.guessFromStream(is);
 	}
 
 	public boolean isNew() {

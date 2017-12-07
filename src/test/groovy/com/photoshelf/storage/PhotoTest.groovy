@@ -1,5 +1,6 @@
 package com.photoshelf.storage
 
+import com.photoshelf.storage.exception.InvalidMimeTypeException
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -32,7 +33,7 @@ class PhotoTest extends Specification {
 
 		where:
 		data												|| exception
-		new ByteArrayInputStream("hoge".getBytes())			|| IllegalStateException
-		new FileInputStream("src/test/resources/lena.pdf")	|| IllegalStateException
+		new ByteArrayInputStream("hoge".getBytes())			|| InvalidMimeTypeException
+		new FileInputStream("src/test/resources/lena.pdf")	|| InvalidMimeTypeException
 	}
 }
