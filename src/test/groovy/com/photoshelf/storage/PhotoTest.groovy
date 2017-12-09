@@ -20,7 +20,7 @@ class PhotoTest extends Specification {
 		new FileInputStream("src/test/resources/lena.png")	| "PNG"		|| "image/png"
 	}
 
-	def "When unknown file type, throws IllegalStateException"() {
+	def "When unknown file type, throws exception"() {
 		when:
 		new Photo(data)
 
@@ -32,5 +32,18 @@ class PhotoTest extends Specification {
 		data												|| exception
 		new ByteArrayInputStream("hoge".getBytes())			|| InvalidImageException
 		new FileInputStream("src/test/resources/lena.pdf")	|| InvalidImageException
+	}
+
+	def "isNew() returns correctly"() {
+		when:
+		def aPhoto = photo
+
+		then:
+		aPhoto.isNew() == result
+
+		where:
+		photo																				|| result
+		new Photo(new FileInputStream("src/test/resources/lena.jpg"))						|| true
+		Photo.of(Identifier.of("id"), new FileInputStream("src/test/resources/lena.jpg"))	|| false
 	}
 }
