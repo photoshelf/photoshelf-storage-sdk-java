@@ -1,6 +1,6 @@
 package com.photoshelf.storage
 
-import com.photoshelf.storage.exception.InvalidMimeTypeException
+import com.photoshelf.storage.exception.InvalidImageException
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -22,18 +22,15 @@ class PhotoTest extends Specification {
 
 	def "When unknown file type, throws IllegalStateException"() {
 		when:
-		def photo = new Photo(data)
+		new Photo(data)
 
 		then:
-		try {
-			photo.mimeType()
-		} catch(Exception e) {
-			assert e.class == exception
-		}
+		def e = thrown(exception)
+		assert e.class == exception
 
 		where:
 		data												|| exception
-		new ByteArrayInputStream("hoge".getBytes())			|| InvalidMimeTypeException
-		new FileInputStream("src/test/resources/lena.pdf")	|| InvalidMimeTypeException
+		new ByteArrayInputStream("hoge".getBytes())			|| InvalidImageException
+		new FileInputStream("src/test/resources/lena.pdf")	|| InvalidImageException
 	}
 }

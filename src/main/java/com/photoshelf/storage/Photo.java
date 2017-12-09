@@ -1,5 +1,7 @@
 package com.photoshelf.storage;
 
+import com.photoshelf.storage.internal.InvalidMimeTypeException;
+import com.photoshelf.storage.exception.InvalidImageException;
 import com.photoshelf.storage.internal.MimeType;
 
 import java.io.*;
@@ -7,13 +9,14 @@ import java.io.*;
 public class Photo {
 
 	private Identifier id;
+	private MimeType mimeType;
 	private byte[] image;
 
-	public Photo(InputStream image) throws IOException {
-		this.image = readAll(image);
+	public Photo(InputStream image) throws InvalidImageException {
+		initialize(image);
 	}
 
-	static Photo of(Identifier id, InputStream image) throws IOException {
+	static Photo of(Identifier id, InputStream image) throws InvalidImageException {
 		Photo instance = new Photo(image);
 		instance.id = id;
 		return instance;
@@ -24,24 +27,28 @@ public class Photo {
 	}
 
 	public MimeType mimeType() {
-		InputStream is = new BufferedInputStream(new ByteArrayInputStream(this.image));
-		return MimeType.guessFromStream(is);
+		return mimeType;
 	}
 
 	public boolean isNew() {
 		return this.id == null;
 	}
 
-	private byte[] readAll(InputStream inputStream) throws IOException {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		byte [] buffer = new byte[1024];
-		while(true) {
-			int len = inputStream.read(buffer);
-			if(len < 0) {
-				break;
+	private void initialize(InputStream inputStream) throws InvalidImageException {
+		try {
+			MimeType mimeType = MimeType.guessFromStream(inputStream);
+			if (!mimeType.isImage()) {
+				throw new InvalidImageException("is not a image");
 			}
-			bout.write(buffer, 0, len);
+			this.mimeType = mimeType;
+		} catch (IOException | InvalidMimeTypeException e) {
+			throw new InvalidImageException("cannot get mimetype", e);
 		}
-		return bout.toByteArray();
+
+		try {
+			this.image = inputStream.readAllBytes();
+		} catch (IOException e) {
+			throw new InvalidImageException("cannot read data", e);
+		}
 	}
 }

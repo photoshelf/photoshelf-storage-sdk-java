@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.*;
 import java.net.URL;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -32,12 +33,12 @@ public class PhotoshelfTest {
 		stubFor(get("/photos/id")
 				.willReturn(aResponse()
 						.withStatus(200)
-						.withBody("test".getBytes())));
+						.withBody(correctImage())));
 
 		Photo photo = client.find(Identifier.of("id"));
 
 		verify(1, getRequestedFor(urlEqualTo("/photos/id")));
-		assertThat(photo.getImage(), is("test".getBytes()));
+		assertThat(photo.getImage(), is(correctImage()));
 	}
 
 	@Test
@@ -135,5 +136,19 @@ public class PhotoshelfTest {
 		wireMockRule.stop();
 
 		assertFalse(client.healthy());
+	}
+
+	private byte[] correctImage() throws IOException {
+		InputStream inputStream = new FileInputStream("src/test/resources/lena.png");
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		byte [] buffer = new byte[1024];
+		while (true) {
+			int len = inputStream.read(buffer);
+			if (len < 0) {
+				break;
+			}
+			bout.write(buffer, 0, len);
+		}
+		return bout.toByteArray();
 	}
 }

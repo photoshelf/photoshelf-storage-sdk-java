@@ -2,6 +2,7 @@ package com.photoshelf.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.photoshelf.storage.exception.InvalidImageException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -31,7 +32,7 @@ public class Photoshelf {
 		this.httpClient = HttpClients.createDefault();
 	}
 
-	public Photo find(Identifier id) throws IOException {
+	public Photo find(Identifier id) throws IOException, InvalidImageException {
 		HttpGet request = new HttpGet(this.url + "/photos/" + id);
 		HttpResponse response = this.httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == SC_OK) {
