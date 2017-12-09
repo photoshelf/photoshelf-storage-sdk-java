@@ -36,19 +36,19 @@ public class Photo {
 
 	private void initialize(InputStream inputStream) throws InvalidImageException {
 		try {
-			MimeType mimeType = MimeType.guessFromStream(inputStream);
+			this.image = inputStream.readAllBytes();
+		} catch (IOException e) {
+			throw new InvalidImageException("cannot read data", e);
+		}
+
+		try {
+			MimeType mimeType = MimeType.guessFromStream(new ByteArrayInputStream(this.image));
 			if (!mimeType.isImage()) {
 				throw new InvalidImageException("is not a image");
 			}
 			this.mimeType = mimeType;
 		} catch (IOException | InvalidMimeTypeException e) {
 			throw new InvalidImageException("cannot get mimetype", e);
-		}
-
-		try {
-			this.image = inputStream.readAllBytes();
-		} catch (IOException e) {
-			throw new InvalidImageException("cannot read data", e);
 		}
 	}
 }
