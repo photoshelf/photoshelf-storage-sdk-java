@@ -31,50 +31,38 @@ public class Photoshelf {
 		this.httpClient = HttpClients.createDefault();
 	}
 
-	public Photo find(Identifier id) throws IOException, InvalidImageException {
-		HttpGet request = new HttpGet(this.url + "/photos/" + id);
-		HttpResponse response = this.httpClient.execute(request);
-		if (response.getStatusLine().getStatusCode() == SC_OK) {
-			return Photo.of(id, response.getEntity().getContent());
-		} else {
-			throw new IllegalStateException(response.toString());
+	public Photo get(Identifier id) {
+		try {
+			HttpGet request = new HttpGet(this.url + "/photos/" + id);
+			HttpResponse response = this.httpClient.execute(request);
+			if (response.getStatusLine().getStatusCode() == SC_OK) {
+				return Photo.of(id, response.getEntity().getContent());
+			} else {
+				throw new IllegalStateException(response.toString());
+			}
+		} catch (IOException | InvalidImageException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 
-	public Identifier create(Photo photo) throws IOException {
-		HttpPost request = new HttpPost(this.url + "/photos");
-		request.setEntity(MultipartEntityBuilder.create()
-				.addBinaryBody("photo", photo.getImage(), ContentType.create("application/octet-stream"), "image")
-				.build());
-		HttpResponse response = this.httpClient.execute(request);
-		if (response.getStatusLine().getStatusCode() == SC_CREATED) {
-			JsonObject json = new Gson().fromJson(new InputStreamReader(response.getEntity().getContent()), JsonObject.class);
-			return Identifier.of(json.get("id").getAsString());
+	public Identifier save(Photo photo) {
+		if (photo.isNew()) {
+			return create(photo);
 		} else {
-			throw new IllegalStateException(response.toString());
+			update(photo);
+			return photo.identifier().orElseThrow(() -> new IllegalStateException("id must not be null"));
 		}
 	}
 
-	public void replace(Photo photo) throws IOException {
-		if (photo.identifier().isPresent()) {
-			HttpPut request = new HttpPut(this.url + "/photos/" + photo.identifier().get());
-			request.setEntity(MultipartEntityBuilder.create()
-					.addBinaryBody("photo", photo.getImage(), ContentType.create("application/octet-stream"), "image")
-					.build());
+	public void delete(Identifier id) {
+		try {
+			HttpDelete request = new HttpDelete(this.url + "/photos/" + id);
 			HttpResponse response = this.httpClient.execute(request);
 			if (response.getStatusLine().getStatusCode() != SC_OK) {
 				throw new IllegalStateException(response.toString());
 			}
-		} else {
-			throw new IllegalArgumentException("id must not be null");
-		}
-	}
-
-	public void delete(Identifier id) throws IOException {
-		HttpDelete request = new HttpDelete(this.url + "/photos/" + id);
-		HttpResponse response = this.httpClient.execute(request);
-		if (response.getStatusLine().getStatusCode() != SC_OK) {
-			throw new IllegalStateException(response.toString());
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 
@@ -88,4 +76,40 @@ public class Photoshelf {
 		}
 	}
 
+	private Identifier create(Photo photo) {
+		try {
+			HttpPost request = new HttpPost(this.url + "/photos");
+			request.setEntity(MultipartEntityBuilder.create()
+					.addBinaryBody("photo", photo.getImage(), ContentType.create("application/octet-stream"), "image")
+					.build());
+			HttpResponse response = this.httpClient.execute(request);
+			if (response.getStatusLine().getStatusCode() == SC_CREATED) {
+				JsonObject json = new Gson().fromJson(new InputStreamReader(response.getEntity().getContent()), JsonObject.class);
+				return Identifier.of(json.get("id").getAsString());
+			} else {
+				throw new IllegalStateException(response.toString());
+			}
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private void update(Photo photo) {
+		if (photo.identifier().isPresent()) {
+			try {
+				HttpPut request = new HttpPut(this.url + "/photos/" + photo.identifier().get());
+				request.setEntity(MultipartEntityBuilder.create()
+						.addBinaryBody("photo", photo.getImage(), ContentType.create("application/octet-stream"), "image")
+						.build());
+				HttpResponse response = this.httpClient.execute(request);
+				if (response.getStatusLine().getStatusCode() != SC_OK) {
+					throw new IllegalStateException(response.toString());
+				}
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		} else {
+			throw new IllegalArgumentException("id must not be null");
+		}
+	}
 }

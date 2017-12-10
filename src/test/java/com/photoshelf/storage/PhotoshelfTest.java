@@ -29,24 +29,24 @@ public class PhotoshelfTest {
 	}
 
 	@Test
-	public void find() throws Exception {
+	public void getTest() throws Exception {
 		stubFor(get("/photos/id")
 				.willReturn(aResponse()
 						.withStatus(200)
 						.withBody(correctImage())));
 
-		Photo photo = client.find(Identifier.of("id"));
+		Photo photo = client.get(Identifier.of("id"));
 
 		verify(1, getRequestedFor(urlEqualTo("/photos/id")));
 		assertThat(photo.getImage(), is(correctImage()));
 	}
 
 	@Test
-	public void failToFind() throws Exception {
+	public void failToFindT() throws Exception {
 		stubFor(get("/photos/id").willReturn(notFound()));
 
 		try {
-			client.find(Identifier.of("id"));
+			client.get(Identifier.of("id"));
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
@@ -60,7 +60,7 @@ public class PhotoshelfTest {
 						.withStatus(201)
 						.withBody("{\"id\":\"foo\"}")));
 
-		Identifier id = client.create(new Photo(new ByteArrayInputStream(correctImage())));
+		Identifier id = client.save(new Photo(new ByteArrayInputStream(correctImage())));
 
 		verify(1, postRequestedFor(urlEqualTo("/photos")));
 		assertThat(id.toString(), is("foo"));
@@ -71,7 +71,7 @@ public class PhotoshelfTest {
 		stubFor(post("/photos").willReturn(serverError()));
 
 		try {
-			client.create(new Photo(new ByteArrayInputStream(correctImage())));
+			client.save(new Photo(new ByteArrayInputStream(correctImage())));
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
@@ -84,7 +84,7 @@ public class PhotoshelfTest {
 				.willReturn(aResponse()
 						.withStatus(200)));
 
-		client.replace(Photo.of(Identifier.of("id"), new ByteArrayInputStream(correctImage())));
+		client.save(Photo.of(Identifier.of("id"), new ByteArrayInputStream(correctImage())));
 
 		verify(1, putRequestedFor(urlEqualTo("/photos/id")));
 	}
@@ -94,7 +94,7 @@ public class PhotoshelfTest {
 		stubFor(put("/photos/id").willReturn(notFound()));
 
 		try {
-			client.replace(Photo.of(Identifier.of("id"), new ByteArrayInputStream(correctImage())));
+			client.save(Photo.of(Identifier.of("id"), new ByteArrayInputStream(correctImage())));
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
