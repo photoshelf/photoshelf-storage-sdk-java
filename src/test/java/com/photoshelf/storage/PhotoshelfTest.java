@@ -54,6 +54,18 @@ public class PhotoshelfTest {
 	}
 
 	@Test
+	public void getServerReturnsFailedData() throws Exception {
+		stubFor(get("/photos/id").willReturn(aResponse().withBody("not a image".getBytes())));
+
+		try {
+			client.get(Identifier.of("id"));
+			fail();
+		} catch (IllegalStateException ignore) {
+		}
+		verify(1, getRequestedFor(urlEqualTo("/photos/id")));
+	}
+
+	@Test
 	public void create() throws Exception {
 		stubFor(post("/photos")
 				.willReturn(aResponse()
