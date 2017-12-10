@@ -5,6 +5,7 @@ import com.photoshelf.storage.exception.InvalidImageException;
 import com.photoshelf.storage.internal.MimeType;
 
 import java.io.*;
+import java.util.Optional;
 
 public class Photo {
 
@@ -20,6 +21,10 @@ public class Photo {
 		Photo instance = new Photo(image);
 		instance.id = id;
 		return instance;
+	}
+
+	Optional<Identifier> identifier() {
+		return Optional.ofNullable(this.id);
 	}
 
 	public byte[] getImage() {

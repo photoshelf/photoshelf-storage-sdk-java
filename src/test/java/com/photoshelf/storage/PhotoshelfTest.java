@@ -60,7 +60,7 @@ public class PhotoshelfTest {
 						.withStatus(201)
 						.withBody("{\"id\":\"foo\"}")));
 
-		Identifier id = client.create("test".getBytes());
+		Identifier id = client.create(new Photo(new ByteArrayInputStream(correctImage())));
 
 		verify(1, postRequestedFor(urlEqualTo("/photos")));
 		assertThat(id.toString(), is("foo"));
@@ -71,7 +71,7 @@ public class PhotoshelfTest {
 		stubFor(post("/photos").willReturn(serverError()));
 
 		try {
-			client.create("test".getBytes());
+			client.create(new Photo(new ByteArrayInputStream(correctImage())));
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
@@ -84,7 +84,7 @@ public class PhotoshelfTest {
 				.willReturn(aResponse()
 						.withStatus(200)));
 
-		client.replace("id", new byte[]{});
+		client.replace(Photo.of(Identifier.of("id"), new ByteArrayInputStream(correctImage())));
 
 		verify(1, putRequestedFor(urlEqualTo("/photos/id")));
 	}
@@ -94,7 +94,7 @@ public class PhotoshelfTest {
 		stubFor(put("/photos/id").willReturn(notFound()));
 
 		try {
-			client.replace("id", new byte[]{});
+			client.replace(Photo.of(Identifier.of("id"), new ByteArrayInputStream(correctImage())));
 			fail();
 		} catch (IllegalStateException ignore) {
 		}
@@ -107,7 +107,7 @@ public class PhotoshelfTest {
 				.willReturn(aResponse()
 						.withStatus(200)));
 
-		client.delete("id");
+		client.delete(Identifier.of("id"));
 
 		verify(1, deleteRequestedFor(urlEqualTo("/photos/id")));
 	}
@@ -117,7 +117,7 @@ public class PhotoshelfTest {
 		stubFor(delete("/photos/id").willReturn(notFound()));
 
 		try {
-			client.delete("id");
+			client.delete(Identifier.of("id"));
 			fail();
 		} catch (IllegalStateException ignore) {
 		}

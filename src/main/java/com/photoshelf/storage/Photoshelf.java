@@ -41,10 +41,10 @@ public class Photoshelf {
 		}
 	}
 
-	public Identifier create(byte[] photo) throws IOException {
+	public Identifier create(Photo photo) throws IOException {
 		HttpPost request = new HttpPost(this.url + "/photos");
 		request.setEntity(MultipartEntityBuilder.create()
-				.addBinaryBody("photo", photo, ContentType.create("application/octet-stream"), "image")
+				.addBinaryBody("photo", photo.getImage(), ContentType.create("application/octet-stream"), "image")
 				.build());
 		HttpResponse response = this.httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() == SC_CREATED) {
@@ -55,18 +55,22 @@ public class Photoshelf {
 		}
 	}
 
-	public void replace(String id, byte[] photo) throws IOException {
-		HttpPut request = new HttpPut(this.url + "/photos/" + id);
-		request.setEntity(MultipartEntityBuilder.create()
-				.addBinaryBody("photo", photo, ContentType.create("application/octet-stream"), "image")
-				.build());
-		HttpResponse response = this.httpClient.execute(request);
-		if (response.getStatusLine().getStatusCode() != SC_OK) {
-			throw new IllegalStateException(response.toString());
+	public void replace(Photo photo) throws IOException {
+		if (photo.identifier().isPresent()) {
+			HttpPut request = new HttpPut(this.url + "/photos/" + photo.identifier().get());
+			request.setEntity(MultipartEntityBuilder.create()
+					.addBinaryBody("photo", photo.getImage(), ContentType.create("application/octet-stream"), "image")
+					.build());
+			HttpResponse response = this.httpClient.execute(request);
+			if (response.getStatusLine().getStatusCode() != SC_OK) {
+				throw new IllegalStateException(response.toString());
+			}
+		} else {
+			throw new IllegalArgumentException("id must not be null");
 		}
 	}
 
-	public void delete(String id) throws IOException {
+	public void delete(Identifier id) throws IOException {
 		HttpDelete request = new HttpDelete(this.url + "/photos/" + id);
 		HttpResponse response = this.httpClient.execute(request);
 		if (response.getStatusLine().getStatusCode() != SC_OK) {
