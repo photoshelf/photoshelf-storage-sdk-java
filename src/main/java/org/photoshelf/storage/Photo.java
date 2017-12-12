@@ -1,8 +1,8 @@
-package com.photoshelf.storage;
+package org.photoshelf.storage;
 
-import com.photoshelf.storage.internal.InvalidMimeTypeException;
-import com.photoshelf.storage.exception.InvalidImageException;
-import com.photoshelf.storage.internal.MimeType;
+import org.photoshelf.storage.internal.InvalidMimeTypeException;
+import org.photoshelf.storage.exception.InvalidImageException;
+import org.photoshelf.storage.internal.MimeType;
 
 import java.io.*;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.photoshelf.storage.exception;
+package org.photoshelf.storage.exception;
 
 public class InvalidImageException extends Exception {
 

@@ -1,6 +1,6 @@
-package com.photoshelf.storage
+package org.photoshelf.storage
 
-import com.photoshelf.storage.exception.InvalidImageException
+import org.photoshelf.storage.exception.InvalidImageException
 import spock.lang.Specification
 import spock.lang.Unroll
 

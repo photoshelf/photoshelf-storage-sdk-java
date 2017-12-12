@@ -1,4 +1,4 @@
-package com.photoshelf.storage.internal;
+package org.photoshelf.storage.internal;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

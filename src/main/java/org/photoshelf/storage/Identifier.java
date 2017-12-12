@@ -1,4 +1,4 @@
-package com.photoshelf.storage;
+package org.photoshelf.storage;
 
 public class Identifier {
 

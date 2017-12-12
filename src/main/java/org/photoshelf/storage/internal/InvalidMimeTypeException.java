@@ -1,4 +1,4 @@
-package com.photoshelf.storage.internal;
+package org.photoshelf.storage.internal;
 
 public class InvalidMimeTypeException extends Exception {
 

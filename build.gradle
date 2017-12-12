@@ -8,7 +8,7 @@ plugins {
 
 ext.moduleName = 'photoshelf.storage'
 
-group 'com.photoshelf'
+group 'org.photoshelf'
 version '0.0.1-SNAPSHOT'
 
 sourceCompatibility = 9

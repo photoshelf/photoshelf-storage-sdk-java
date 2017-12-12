@@ -1,8 +1,8 @@
-package com.photoshelf.storage;
+package org.photoshelf.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.photoshelf.storage.exception.InvalidImageException;
+import org.photoshelf.storage.exception.InvalidImageException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;

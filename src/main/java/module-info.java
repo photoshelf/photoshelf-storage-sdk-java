@@ -3,6 +3,6 @@ module photoshelf.storage {
     requires httpcore;
     requires httpclient;
     requires httpmime;
-    exports com.photoshelf.storage;
-    exports com.photoshelf.storage.exception;
+    exports org.photoshelf.storage;
+    exports org.photoshelf.storage.exception;
 }
